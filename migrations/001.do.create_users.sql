@@ -3,11 +3,11 @@ CREATE TABLE users (
     user_name TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     full_name TEXT NOT NULL,
-    title TEXT NOT NULL,
-    bio TEXT NOT NULL,
-    theme_color TEXT NOT NULL,
+    title TEXT,
+    bio TEXT,
+    theme_color TEXT,
     github_url TEXT,
     linkedin_url TEXT,
-    email_address TEXT NOT NULL,
+    email_address TEXT,
     date_created TIMESTAMP DEFAULT now() NOT NULL
 );
