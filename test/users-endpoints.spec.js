@@ -1,5 +1,4 @@
 const knex = require("knex");
-const bcrypt = require("bcryptjs");
 const app = require("../src/app");
 const helpers = require("./test-helpers");
 
@@ -142,6 +141,81 @@ describe("Users Endpoints", function() {
           .expect(201)
           .expect(res => {
             expect(res.body).to.have.property("authToken");
+          });
+      });
+    });
+  });
+
+  describe(`GET /api/users/:user_id`, () => {
+    context(`Given there are users in the database`, () => {
+      beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
+      it(`responds with 200 and the specified user data`, () => {
+        const userName = "test-user-2";
+        const user = testUsers[1];
+        const expectedUser = {
+          id: user.id,
+          user_name: user.user_name,
+          full_name: user.full_name,
+          title: user.title,
+          bio: user.bio,
+          theme_color: user.theme_color,
+          github_url: user.github_url,
+          linkedin_url: user.linkedin_url,
+          email_address: user.email_address
+        };
+        return supertest(app)
+          .get(`/api/users/${userName}`)
+          .expect(200, expectedUser);
+      });
+    });
+  });
+
+  describe(`PATCH /api/users/:user_id`, () => {
+    context(`Given there are users in the database`, () => {
+      beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
+      it(`responds with 204 and updates the user`, () => {
+        const userNameToUpdate = "test-user-2";
+        const body = {
+          updatedUserData: {
+            title: "updated user title",
+            bio: "updated bio",
+            github_url: "www.updated.com"
+          }
+        };
+        const expectedUser = {
+          ...testUsers[1],
+          ...body.updatedUserData
+        };
+        return supertest(app)
+          .patch(`/api/users/${userNameToUpdate}`)
+          .set("Authorization", helpers.makeAuthHeader(testUsers[1]))
+          .send(body)
+          .expect(204)
+          .then(res => {
+            supertest(app)
+              .get(`api/users/${userNameToUpdate}`)
+              .expect(expectedUser);
+          });
+      });
+    });
+  });
+
+  describe(`DELETE /api/users/:user_id`, () => {
+    context(`Given there are users in the database`, () => {
+      beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
+      it(`responds with 204 and removes the user`, () => {
+        const userNameToRemove = "test-user-2";
+        return supertest(app)
+          .delete(`/api/users/${userNameToRemove}`)
+          .set("Authorization", helpers.makeAuthHeader(testUsers[1]))
+          .send(testUsers[1])
+          .expect(204)
+          .then(res => {
+            supertest(app)
+              .get(`/api/users/${userNameToRemove}`)
+              .expect(404, {
+                error: `User doesn't exist`
+              });
           });
       });
     });

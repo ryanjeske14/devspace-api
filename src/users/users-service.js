@@ -10,12 +10,29 @@ const UsersService = {
       .first()
       .then(user => !!user);
   },
+  getUser(db, user_name) {
+    return db
+      .from("users")
+      .select("*")
+      .where({ user_name })
+      .first();
+  },
   insertUser(db, newUser) {
     return db
       .insert(newUser)
       .into("users")
       .returning("*")
       .then(([user]) => user);
+  },
+  updateUser(db, user_name, updatedUserData) {
+    return db("users")
+      .where({ user_name })
+      .update(updatedUserData);
+  },
+  deleteUser(db, user_name) {
+    return db("users")
+      .where({ user_name })
+      .delete();
   },
   validatePassword(password) {
     if (password.length < 8) {
@@ -38,9 +55,14 @@ const UsersService = {
   serializeUser(user) {
     return {
       id: user.id,
-      full_name: xss(user.full_name),
       user_name: xss(user.user_name),
-      date_created: new Date(user.date_created)
+      full_name: xss(user.full_name),
+      title: xss(user.title),
+      bio: xss(user.bio),
+      theme_color: user.theme_color,
+      github_url: xss(user.github_url),
+      linkedin_url: xss(user.linkedin_url),
+      email_address: xss(user.email_address)
     };
   }
 };
