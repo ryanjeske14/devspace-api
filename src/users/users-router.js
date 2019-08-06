@@ -1,12 +1,13 @@
 const express = require("express");
 const path = require("path");
 const UsersService = require("./users-service");
+const { requireAuth } = require("../middleware/jwt-auth");
 const AuthService = require("./../auth/auth-service");
 
 const usersRouter = express.Router();
 const jsonBodyParser = express.json();
 
-usersRouter.post("/", jsonBodyParser, (req, res, next) => {
+usersRouter.route("/").post(jsonBodyParser, (req, res, next) => {
   const { password, user_name, full_name } = req.body;
 
   for (const field of ["user_name", "full_name", "password"])
@@ -45,7 +46,7 @@ usersRouter.post("/", jsonBodyParser, (req, res, next) => {
 
             res
               .status(201)
-              .location(path.posix.join(req.originalUrl, `/${user.id}`))
+              .location(path.posix.join(req.originalUrl, `/${user.user_name}`))
               .send({
                 authToken: AuthService.createJwt(sub, payload)
               });
@@ -56,4 +57,79 @@ usersRouter.post("/", jsonBodyParser, (req, res, next) => {
     .catch(next);
 });
 
+usersRouter
+  .route("/:user_name")
+  .all(checkUserExists)
+  .get((req, res, next) => {
+    UsersService.getUser(req.app.get("db"), req.params.user_name).then(user => {
+      res.json(UsersService.serializeUser(user));
+    });
+  })
+  .patch(requireAuth, jsonBodyParser, (req, res, next) => {
+    const { updatedUserData } = req.body;
+
+    // only allow users to modify their own profile, and not other users' profiles
+    if (req.user.user_name !== req.params.user_name) {
+      return res.status(401).json({
+        error: {
+          message: "Unauthorized request: You may only edit your own profile!"
+        }
+      });
+    }
+    // check to make sure body contains fields to update
+    const numberOfValues = Object.values(updatedUserData).filter(Boolean)
+      .length;
+    if (numberOfValues === 0)
+      return res.status(400).json({
+        error: {
+          message: `Request body must contain at least one of the following: 'full_name', 'title', 'bio', 'theme_color', 'github_url', 'linkedin_url', 'email_address'`
+        }
+      });
+
+    UsersService.updateUser(
+      req.app.get("db"),
+      req.user.user_name,
+      updatedUserData
+    )
+      .then(numRowsAffected => {
+        res.status(204).end();
+      })
+      .catch(next);
+  })
+  .delete(requireAuth, jsonBodyParser, (req, res, next) => {
+    // only allow users to delete their own profile, and not other users' profiles
+    if (req.user.user_name !== req.params.user_name) {
+      return res.status(401).json({
+        error: {
+          message: "Unauthorized request: You may only delete your own profile!"
+        }
+      });
+    }
+
+    UsersService.deleteUser(req.app.get("db"), req.user.user_name)
+      .then(numRowsAffected => {
+        res.status(204).end();
+      })
+      .catch(next);
+  });
+
+// middleware to check if specific user exists in DB
+async function checkUserExists(req, res, next) {
+  try {
+    const user = await UsersService.hasUserWithUserName(
+      req.app.get("db"),
+      req.params.user_name
+    );
+
+    if (!user)
+      return res.status(404).json({
+        error: `User doesn't exist`
+      });
+
+    res.user = user;
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
 module.exports = usersRouter;
