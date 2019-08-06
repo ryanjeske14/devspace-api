@@ -5,7 +5,7 @@ const helpers = require("./test-helpers");
 describe("Skills Endpoints", function() {
   let db;
 
-  const { testSkills } = helpers.makeFixtures();
+  const { testUsers, testSkills, testProjects } = helpers.makeFixtures();
 
   before("make knex instance", () => {
     db = knex({
@@ -32,7 +32,9 @@ describe("Skills Endpoints", function() {
   });
 
   context(`Given there are skills in the database`, () => {
-    beforeEach("insert skills data", () => helpers.seedTables(db, testSkills));
+    beforeEach("insert data", () =>
+      helpers.seedTables(db, testUsers, testSkills, testProjects)
+    );
 
     it("responds with 200 and all of the skills", () => {
       const expectedSkills = testSkills;
