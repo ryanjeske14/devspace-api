@@ -63,10 +63,46 @@ function makeSkillsArray() {
   ];
 }
 
+function makeProjectsArray() {
+  return [
+    {
+      id: 1,
+      name: "project 1",
+      description: "project description 1",
+      skills: "{1,2,3}",
+      github_url: "github1.com",
+      demo_url: "demo1.url",
+      image_url: "image1.url",
+      user_id: 3
+    },
+    {
+      id: 2,
+      name: "project 2",
+      description: "project description 2",
+      skills: "{4,3,2}",
+      github_url: "github2.com",
+      demo_url: "demo2.url",
+      image_url: "image2.url",
+      user_id: 2
+    },
+    {
+      id: 3,
+      name: "project 3",
+      description: "project description 3",
+      skills: "{2,3,4}",
+      github_url: "github3.com",
+      demo_url: "demo3.url",
+      image_url: "image3.url",
+      user_id: 1
+    }
+  ];
+}
+
 function makeFixtures() {
   const testUsers = makeUsersArray();
   const testSkills = makeSkillsArray();
-  return { testUsers, testSkills };
+  const testProjects = makeProjectsArray();
+  return { testUsers, testSkills, testProjects };
 }
 
 function seedUsers(db, users) {
@@ -83,13 +119,19 @@ function seedUsers(db, users) {
     );
 }
 
-function seedTables(db, skills) {
+function seedTables(db, users, skills, projects) {
   // use a transaction to group the queries and auto rollback on any failure
   return db.transaction(async trx => {
+    await seedUsers(trx, users);
     await trx.into("skills").insert(skills);
     // update the auto sequence to match the forced id values
     await trx.raw(`SELECT setval('skills_id_seq', ?)`, [
       skills[skills.length - 1].id
+    ]);
+    await trx.into("projects").insert(projects);
+    // update the auto sequence to match the forced id values
+    await trx.raw(`SELECT setval('projects_id_seq', ?)`, [
+      projects[projects.length - 1].id
     ]);
   });
 }
