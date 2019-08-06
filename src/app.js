@@ -8,6 +8,7 @@ const skillsRouter = require("./skills/skills-router");
 const authRouter = require("./auth/auth-router");
 const usersRouter = require("./users/users-router");
 const projectsRouter = require("./projects/projects-router");
+const portfolioRouter = require("./portfolio/portfolio-router");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/skills", skillsRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/projects", projectsRouter);
+app.use("/api/portfolio", portfolioRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
