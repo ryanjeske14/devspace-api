@@ -13,7 +13,18 @@ portfolioRouter
       .then(portfolio => {
         return portfolio.rows[0];
       })
-      .then(portfolio => res.json(portfolio))
+      .then(portfolio => {
+        let { projects } = portfolio;
+        for (let project of projects) {
+          let { skills } = project;
+          skills = skills.map(skill => {
+            return skillset.find(skillItem => skillItem.id === skill);
+          });
+          project.skills = skills;
+        }
+        portfolio.projects = projects;
+        res.json(portfolio);
+      })
       .catch(next);
   });
 
