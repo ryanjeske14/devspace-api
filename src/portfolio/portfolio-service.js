@@ -10,7 +10,30 @@ const ProjectsService = {
     ) as projects
         from users u where u.user_name = '${user_name}'`);
   },
-  serializePortfolio(portfolio) {}
+  serializePortfolio(portfolio) {
+    return {
+      id: portfolio.id,
+      user_name: xss(portfolio.user_name),
+      full_name: xss(portfolio.full_name),
+      title: xss(portfolio.title),
+      bio: xss(portfolio.bio),
+      theme_color: portfolio.theme_color,
+      github_url: xss(portfolio.github_url),
+      linkedin_url: xss(portfolio.linkedin_url),
+      email_address: xss(portfolio.email_address),
+      projects: portfolio.projects.map(project => {
+        return {
+          id: project.id,
+          name: xss(project.name),
+          description: xss(project.description),
+          skills: project.skills,
+          github_url: xss(project.github_url),
+          demo_url: xss(project.demo_url),
+          image_url: xss(project.image_url)
+        };
+      })
+    };
+  }
 };
 
 module.exports = ProjectsService;
