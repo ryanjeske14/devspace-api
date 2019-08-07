@@ -22,7 +22,7 @@ describe("Skills Endpoints", function() {
   afterEach("cleanup", () => helpers.cleanTables(db));
 
   describe(`GET /api/skills`, () => {
-    context(`Given no recipes`, () => {
+    context(`Given no skills`, () => {
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
           .get("/api/skills")

@@ -23,7 +23,7 @@ portfolioRouter
           project.skills = skills;
         }
         portfolio.projects = projects;
-        res.json(portfolio);
+        res.json(PortfolioService.serializePortfolio(portfolio));
       })
       .catch(next);
   });

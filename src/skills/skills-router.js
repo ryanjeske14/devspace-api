@@ -5,7 +5,7 @@ const skillsRouter = express.Router();
 
 skillsRouter.route("/").get((req, res, next) => {
   SkillsService.getSkills(req.app.get("db"))
-    .then(skills => res.json(skills))
+    .then(skills => res.json(SkillsService.serializeSkills(skills)))
     .catch(next);
 });
 

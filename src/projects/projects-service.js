@@ -28,12 +28,12 @@ const ProjectsService = {
   serializeProject(project) {
     return {
       id: project.id,
-      name: project.name,
-      description: project.description,
+      name: xss(project.name),
+      description: xss(project.description),
       skills: project.skills,
-      github_url: project.github_url,
-      demo_url: project.demo_url,
-      image_url: project.image_url,
+      github_url: xss(project.github_url),
+      demo_url: xss(project.demo_url),
+      image_url: xss(project.image_url),
       user_id: project.user_id
     };
   }
