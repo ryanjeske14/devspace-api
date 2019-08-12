@@ -57,26 +57,25 @@ projectsRouter
       .catch(next);
   })
   .patch(requireAuth, jsonBodyParser, (req, res, next) => {
-    const {
-      name,
-      description,
-      skills,
-      github_url,
-      demo_url,
-      image_url,
-      user_id
-    } = req.body;
-    const projectToUpdate = {
-      name,
-      description,
-      skills,
-      github_url,
-      demo_url,
-      image_url,
-      user_id
-    };
+    const acceptableFields = [
+      "name",
+      "description",
+      "skills",
+      "github_url",
+      "demo_url",
+      "image_url"
+    ];
+
+    const projectToUpdate = {};
+
+    for (let field of acceptableFields) {
+      if (req.body.hasOwnProperty(field)) {
+        projectToUpdate[field] = req.body[field];
+      }
+    }
+
     // only allow users to modify their own profile, and not other users' profiles
-    if (req.user.id !== projectToUpdate.user_id) {
+    if (req.user.id !== res.project.user_id) {
       return res.status(401).json({
         error: {
           message: "Unauthorized request: You may only edit your own projects!"

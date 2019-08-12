@@ -176,11 +176,9 @@ describe("Users Endpoints", function() {
       it(`responds with 204 and updates the user`, () => {
         const userNameToUpdate = "test-user-2";
         const body = {
-          updatedUserData: {
-            title: "updated user title",
-            bio: "updated bio",
-            github_url: "www.updated.com"
-          }
+          title: "updated user title",
+          bio: "updated bio",
+          github_url: "www.updated.com"
         };
         const expectedUser = {
           ...testUsers[1],

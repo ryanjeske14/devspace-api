@@ -66,7 +66,23 @@ usersRouter
     });
   })
   .patch(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { updatedUserData } = req.body;
+    const acceptableFields = [
+      "full_name",
+      "title",
+      "bio",
+      "theme_color",
+      "github_url",
+      "linkedin_url",
+      "email_address"
+    ];
+
+    const updatedUser = {};
+
+    for (let field of acceptableFields) {
+      if (req.body.hasOwnProperty(field)) {
+        updatedUser[field] = req.body[field];
+      }
+    }
 
     // only allow users to modify their own profile, and not other users' profiles
     if (req.user.user_name !== req.params.user_name) {
@@ -77,8 +93,7 @@ usersRouter
       });
     }
     // check to make sure body contains fields to update
-    const numberOfValues = Object.values(updatedUserData).filter(Boolean)
-      .length;
+    const numberOfValues = Object.values(updatedUser).filter(Boolean).length;
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
@@ -86,17 +101,13 @@ usersRouter
         }
       });
 
-    UsersService.updateUser(
-      req.app.get("db"),
-      req.user.user_name,
-      updatedUserData
-    )
+    UsersService.updateUser(req.app.get("db"), req.user.user_name, updatedUser)
       .then(numRowsAffected => {
         res.status(204).end();
       })
       .catch(next);
   })
-  .delete(requireAuth, jsonBodyParser, (req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     // only allow users to delete their own profile, and not other users' profiles
     if (req.user.user_name !== req.params.user_name) {
       return res.status(401).json({
