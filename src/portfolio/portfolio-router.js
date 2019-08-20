@@ -14,7 +14,7 @@ portfolioRouter
         return portfolio.rows[0];
       })
       .then(portfolio => {
-        let { projects } = portfolio;
+        let projects = portfolio.projects === null ? [] : portfolio.projects;
         for (let project of projects) {
           let { skills } = project;
           skills = skills.map(skill => {

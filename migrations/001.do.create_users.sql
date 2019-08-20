@@ -5,7 +5,7 @@ CREATE TABLE users (
     full_name TEXT NOT NULL,
     title TEXT,
     bio TEXT,
-    theme_color TEXT,
+    theme_color TEXT DEFAULT 'black',
     github_url TEXT,
     linkedin_url TEXT,
     email_address TEXT,
