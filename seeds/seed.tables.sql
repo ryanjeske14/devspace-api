@@ -6,9 +6,9 @@ TRUNCATE
     users 
     RESTART IDENTITY CASCADE;
 
-INSERT INTO users (user_name, password, full_name, title, bio, theme_color, github_url, linkedin_url, email_address)
+INSERT INTO users (user_name, password, full_name, title, bio, profile_picture, theme_color, banner_image, github_url, linkedin_url, email_address)
 VALUES
-    ('chucknorris','$2a$12$WnOgXzPQ/1qz5aynhdWlVeFjbdy8iAnmITbg27I/rq1zSZ4u/m34u','Chuck Norris','Fullstack Ass Kicker', 'Let''s get one thing straight... there''s nothing soft about my software. My programs don''t have version numbers because I only write them once. My code optimizes itself. I don''t use debuggers; I just stare down the bugs until the code confesses. If users report a bug or have a feature request, they don''t live to see the sun set.','blue', 'https://github.com/charlesnorris', 'https://www.linkedin.com/in/chuck-norris-90123b179/','totallynotchucknorris@roundhouse.bam');
+    ('chucknorris','$2a$12$WnOgXzPQ/1qz5aynhdWlVeFjbdy8iAnmITbg27I/rq1zSZ4u/m34u','Chuck Norris','Fullstack Ass Kicker', 'Let''s get one thing straight... there''s nothing soft about my software. My programs don''t have version numbers because I only write them once. My code optimizes itself. I don''t use debuggers; I just stare down the bugs until the code confesses. If users report a bug or have a feature request, they don''t live to see the sun set.', 'http://bit.ly/30lGYbv', 'blue', 'mountains', 'https://github.com/charlesnorris', 'https://www.linkedin.com/in/chuck-norris-90123b179/','totallynotchucknorris@roundhouse.bam');
 
 INSERT INTO skills (name)
 VALUES

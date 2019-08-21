@@ -1,8 +1,8 @@
 const xss = require("xss");
 
-const ProjectsService = {
+const PortfolioService = {
   getPortfolioData(db, user_name) {
-    return db.raw(`select u.id, u.user_name, u.full_name, u.title, u. bio, u.theme_color, u.github_url, u.linkedin_url, u.email_address,
+    return db.raw(`select u.id, u.user_name, u.full_name, u.title, u. bio, u.profile_picture, u.theme_color, u.banner_image, u.github_url, u.linkedin_url, u.email_address,
     (select json_agg(proj)
     from (
       select p.id, p.name, p.description, p.skills, p.github_url, p.demo_url, p.image_url from projects p where p.user_id = u.id
@@ -17,7 +17,9 @@ const ProjectsService = {
       full_name: xss(portfolio.full_name),
       title: xss(portfolio.title),
       bio: xss(portfolio.bio),
+      profile_picture: xss(portfolio.profile_picture),
       theme_color: portfolio.theme_color,
+      banner_image: portfolio.banner_image,
       github_url: xss(portfolio.github_url),
       linkedin_url: xss(portfolio.linkedin_url),
       email_address: xss(portfolio.email_address),
@@ -36,4 +38,4 @@ const ProjectsService = {
   }
 };
 
-module.exports = ProjectsService;
+module.exports = PortfolioService;

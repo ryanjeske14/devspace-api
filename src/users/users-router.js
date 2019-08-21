@@ -70,7 +70,9 @@ usersRouter
       "full_name",
       "title",
       "bio",
+      "profile_picture",
       "theme_color",
+      "banner_image",
       "github_url",
       "linkedin_url",
       "email_address"
@@ -97,7 +99,7 @@ usersRouter
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
-          message: `Request body must contain at least one of the following: 'full_name', 'title', 'bio', 'theme_color', 'github_url', 'linkedin_url', 'email_address'`
+          message: `Request body must contain at least one of the following: 'full_name', 'title', 'bio', 'profile_picture', theme_color', 'banner_image', 'github_url', 'linkedin_url', 'email_address'`
         }
       });
 

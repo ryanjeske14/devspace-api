@@ -59,7 +59,9 @@ const UsersService = {
       full_name: xss(user.full_name),
       title: xss(user.title),
       bio: xss(user.bio),
+      profile_picture: xss(user.profile_picture),
       theme_color: user.theme_color,
+      banner_image: user.banner_image,
       github_url: xss(user.github_url),
       linkedin_url: xss(user.linkedin_url),
       email_address: xss(user.email_address)
