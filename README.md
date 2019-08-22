@@ -1,26 +1,131 @@
-# Express Boilerplate!
+# Devspace
 
-This is a boilerplate project used for starting new projects!
+A full stack web app that allows web developers to easily create a basic portfolio site to introduce themselves and demo their skills and projects.
 
-## Set up
+## Demo:
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+- [Devspace Live App](https://ryanjeske-devspace.herokuapp.com/)
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+## Built With
 
-## Scripts
+* Node.js
+* Express
+* PostgreSQL
 
-Start the application `npm start`
+## Client Repo:
 
-Start nodemon for the application `npm run dev`
+- [Devspace](https://github.com/ryanjeske14/devspace)
 
-Run the tests `npm test`
+## AUTH TOKEN
 
-## Deploying
+Protected endpoints require a valid auth token in the authorization header. In order to obtain an auth token, either register if you're a new user, or log in if you're an existing user, and find the auth token in your browser's local storage. 
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+For example, if using Google Chrome, log in to your Devspace account, open Chrome Developer Tools (Ctrl+Shift+I), navigate to the Application tab in the top nav bar, expand the Local Storage dropdown and select the option at https://https://ryanjeske-devspace.herokuapp.com/. If you are logged in, you should see your current auth token under the devspace-auth-token key. 
+
+For protected endpoints, you will need to include your auth token in the authorization header of your HTTP request, preceded by "bearer". 
+
+Example:
+authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+## Devspace API Endpoints:
+
+### insertUser (public)
+#### Description:
+Used to create the initial user account by submitting only the username, full name, and password.
+#### HTTP Request Method:
+POST
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/users
+#### Required Headers:
+content-type: application/json
+
+### getUser (public)
+#### Description:
+Responds with requested user's full name, title, bio, profile picture, theme color, banner image, GitHub URL, LinkedIn URL, and email address.
+#### HTTP Request Method:
+GET
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/users/:user_name
+#### Example URL:
+https://secure-badlands-85742.herokuapp.com/api/users/chucknorris
+
+### updateUser (protected)
+#### Description:
+Used to update requested user's full name, title, bio, profile picture, theme color, banner image, GitHub URL, LinkedIn URL, and email address. 
+#### HTTP Request Method:
+PATCH
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/users/:user_name
+#### Example URL:
+https://secure-badlands-85742.herokuapp.com/api/users/chucknorris
+#### Required Headers:
+content-type: application/json
+authorization: bearer <AUTH TOKEN>
+
+### deleteUser (protected)
+#### Description:
+Used to delete requested user's account. 
+#### HTTP Request Method:
+DELETE
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/users/:user_name
+#### Example URL:
+https://secure-badlands-85742.herokuapp.com/api/users/chucknorris
+#### Required Headers:
+authorization: bearer <AUTH TOKEN>
+
+### insertProject (protected)
+#### Description:
+Used to create a new project by submitting the project's name, description, skills, GitHub URL, demo URL, and image URL.
+#### HTTP Request Method:
+POST
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/projects
+#### Required Headers:
+content-type: application/json
+authorization: bearer <AUTH TOKEN>
+
+### getProject (public)
+#### Description:
+Responds with requested projects's id, name, description, skills, GitHub URL, demo URL, image URL, and user/owner id.  
+#### HTTP Request Method:
+GET
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/projects/:project_id
+#### Example URL:
+https://secure-badlands-85742.herokuapp.com/api/projects/2
+
+### updateProject (protected)
+#### Description:
+Used to update requested projects's name, description, skills, GitHub URL, demo URL, and image URL.
+#### HTTP Request Method:
+PATCH
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/projects/:project_id
+#### Example URL:
+https://secure-badlands-85742.herokuapp.com/api/projects/2
+#### Required Headers:
+content-type: application/json
+authorization: bearer <AUTH TOKEN>
+
+### deleteProject (protected)
+#### Description:
+Used to delete requested project. 
+#### HTTP Request Method:
+DELETE
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/projects/:project_id
+#### Example URL:
+https://secure-badlands-85742.herokuapp.com/api/projects/2
+#### Required Headers:
+authorization: bearer <AUTH TOKEN>
+
+### getPortfolioData (public)
+#### Description:
+Responds with requested user's portfolio data, including the user's id, username, full name, title, bio, profile picture, theme color, banner image, GitHub URL, LinkedIn URL, email address, and projects. 
+#### HTTP Request Method:
+GET
+#### Endpoint URL:
+https://secure-badlands-85742.herokuapp.com/api/portfolio/:user_name
+#### Example URL:
+https://secure-badlands-85742.herokuapp.com/api/portfolio/chucknorris
